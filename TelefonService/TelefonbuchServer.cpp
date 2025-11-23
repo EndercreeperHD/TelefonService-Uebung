@@ -22,51 +22,39 @@ TelefonbuchServer::~TelefonbuchServer(void)
 
 void TelefonbuchServer::start()
 {
-	string anfrageName = "";
-	string antwort;
+	MyThread AWorkThread(daten);
+	MyThread BWorkThread(daten);
+	MyThread CWorkThread(daten);
+
+	AWorkThread.start();
+	BWorkThread.start();
+	CWorkThread.start();
+
 	while (1) {
 		// 3) accept() - erzeugt einen ArbeitsSocket (workSocket), wenn ein Client eine Verbindung anfragt
 		//    Der Aufruf von accept() blockiert solange, bis ein Client Verbindung aufnimmt
 		Socket* work = server->accept();
 		if (work == nullptr) continue;
-		MyThread AWorkThread(work, daten);
-		MyThread BWorkThread(work, daten);
-		MyThread CWorkThread(work, daten);
-		cout << "Client verbunden!" << endl;
-		
-		
-		while (anfrageName != "exit")
-		{
-			// 5b) Kommunikation mit read() write()
-			anfrageName = work->readLine();
-			cout << anfrageName << "\n";
-			if (anfrageName.substr(0, 4) == "add ") {
-				string zs = anfrageName;
-				zs.erase(0,4);
-				daten->eintragEinfuegen(new Eintrag(zs.substr(0, zs.find(" ")), zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" "))));
-				antwort = "wurde hinzugefuegt " + zs.substr(0, zs.find(" ")) + " " + zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" "));
-				work->write(antwort);
-				daten->toString();
+		while (work != nullptr){
+			if (AWorkThread.getSocket() == nullptr) {
+				AWorkThread.setSocket(work);
+				work = nullptr;
 			}
-			else if (anfrageName.substr(0, 7) == "remove ") {
-				string zs = anfrageName;
-				zs.erase(0,7);
-				daten->eintragLoeschen(zs);
-				antwort = "wurde geloescht " + zs;
-				work->write(antwort);
-				daten->toString();
+			else if (BWorkThread.getSocket() == nullptr) {
+				BWorkThread.setSocket(work);
+				work = nullptr;
 			}
-			else {
-				antwort = daten->nrSuche(anfrageName);
-				work->write(antwort);
+			else if (CWorkThread.getSocket() == nullptr) {
+				CWorkThread.setSocket(work);
+				work = nullptr;
 			}
-			antwort.clear();
+			Sleep(500);
 		}
-
-		// 7) ArbeitsSocket abmelden
-		work->close();
 	}
-
 	// 8) ServerSocket abmelden
+	AWorkThread.join();
+	BWorkThread.join();
+	CWorkThread.join();
+
 	this->~TelefonbuchServer();
 }
