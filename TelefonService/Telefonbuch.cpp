@@ -8,7 +8,7 @@ using namespace std;
 // 2.2 Aufgabe
 Telefonbuch::Telefonbuch()
 {
-	anzahlEintraege = 3;
+	anzahlEintraege = 0;
 	maxAnzahlEintraege = 10;
 
 	// Standardeinträge

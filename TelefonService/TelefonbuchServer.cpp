@@ -2,6 +2,7 @@
 #include <string>
 #include "TelefonbuchServer.h"
 #include "Eintrag.h"
+#include "MyThread.h"
 using namespace std;
 
 TelefonbuchServer::TelefonbuchServer(int port)
@@ -28,9 +29,11 @@ void TelefonbuchServer::start()
 		//    Der Aufruf von accept() blockiert solange, bis ein Client Verbindung aufnimmt
 		Socket* work = server->accept();
 		if (work == nullptr) continue;
-
+		MyThread AWorkThread(work, daten);
+		MyThread BWorkThread(work, daten);
+		MyThread CWorkThread(work, daten);
 		cout << "Client verbunden!" << endl;
-
+		
 		
 		while (anfrageName != "exit")
 		{
@@ -41,20 +44,23 @@ void TelefonbuchServer::start()
 				string zs = anfrageName;
 				zs.erase(0,4);
 				daten->eintragEinfuegen(new Eintrag(zs.substr(0, zs.find(" ")), zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" "))));
-				work->write("wurde hinzugefuegt " + zs.substr(0, zs.find(" ")) + " " + zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" ")) + "\n");
+				antwort = "wurde hinzugefuegt " + zs.substr(0, zs.find(" ")) + " " + zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" "));
+				work->write(antwort);
 				daten->toString();
 			}
 			else if (anfrageName.substr(0, 7) == "remove ") {
 				string zs = anfrageName;
 				zs.erase(0,7);
 				daten->eintragLoeschen(zs);
-				work->write("wurde geloescht " + zs + "\n");
+				antwort = "wurde geloescht " + zs;
+				work->write(antwort);
 				daten->toString();
 			}
 			else {
 				antwort = daten->nrSuche(anfrageName);
 				work->write(antwort);
 			}
+			antwort.clear();
 		}
 
 		// 7) ArbeitsSocket abmelden
