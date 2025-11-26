@@ -39,14 +39,17 @@ void TelefonbuchServer::start()
 			if (AWorkThread.getSocket() == nullptr) {
 				AWorkThread.setSocket(work);
 				work = nullptr;
+				break;
 			}
-			else if (BWorkThread.getSocket() == nullptr) {
+			if (BWorkThread.getSocket() == nullptr) {
 				BWorkThread.setSocket(work);
 				work = nullptr;
+				break;
 			}
-			else if (CWorkThread.getSocket() == nullptr) {
+			if (CWorkThread.getSocket() == nullptr) {
 				CWorkThread.setSocket(work);
 				work = nullptr;
+				break;
 			}
 			Sleep(500);
 		}

@@ -23,18 +23,20 @@ public:
 		mutex coutMoutex;
 		mutex TBMoutex;
 		while (1) {
-			Sleep(400);
-			if (work == nullptr) continue;
+			while (work == nullptr) {
+				Sleep(400);
+			}
 			string anfrageName = "";
 			string antwort;
 			coutMoutex.lock();
 			cout << "Client mit Thread Nr." << ThreadNr << " verbunden!\n";
 			coutMoutex.unlock();
-			while (anfrageName != "exit")
+			while (anfrageName != "exit" || anfrageName != "EXIT")
 			{
 				// 5b) Kommunikation mit read() write()
 				anfrageName = work->readLine();
 				coutMoutex.lock();
+				cout << "Thread Nr." << ThreadNr << "\n";
 				cout << anfrageName << "\n";
 				coutMoutex.unlock();
 				if (anfrageName.substr(0, 4) == "add ") {
@@ -46,6 +48,7 @@ public:
 					antwort = "wurde hinzugefuegt " + zs.substr(0, zs.find(" ")) + " " + zs.substr(zs.find(" ") + 1, zs.size() - zs.find(" "));
 					work->write(antwort);
 					coutMoutex.lock();
+					cout << "Thread Nr." << ThreadNr << "\n";
 					daten->toString();
 					coutMoutex.unlock();
 				}
@@ -58,6 +61,7 @@ public:
 					antwort = "wurde geloescht " + zs;
 					work->write(antwort);
 					coutMoutex.lock();
+					cout << "Thread Nr." << ThreadNr << "\n";
 					daten->toString();
 					coutMoutex.unlock();
 				}
@@ -68,7 +72,7 @@ public:
 				antwort.clear();
 			}
 			coutMoutex.lock();
-			cout << "verbindung mit Thread Nr." << ThreadNr << "getrennt!\n";
+			cout << "verbindung mit Thread Nr." << ThreadNr << " getrennt!\n";
 			coutMoutex.unlock();
 			work->close();
 			work = nullptr;
