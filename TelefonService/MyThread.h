@@ -58,12 +58,15 @@ public:
 					TBMoutex.lock();
 					daten->eintragLoeschen(zs);
 					TBMoutex.unlock();
-					antwort = "wurde geloescht " + zs;
+					antwort = zs + " wurde geloescht";
 					work->write(antwort);
 					coutMoutex.lock();
 					cout << "Thread Nr." << ThreadNr << "\n";
 					daten->toString();
 					coutMoutex.unlock();
+				}
+				else if (anfrageName == "help") {
+					work->write("add [name] [nummer] Antwort: wurde hinzugefuegt [name] [nummer]; remove [name] ,Antwort: [name] wurde geloescht; [name] Antwort: [nummer]");
 				}
 				else {
 					antwort = daten->nrSuche(anfrageName);
