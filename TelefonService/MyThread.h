@@ -39,7 +39,7 @@ public:
 				cout << "Thread Nr." << ThreadNr << "\n";
 				cout << anfrageName << "\n";
 				coutMoutex.unlock();
-				if (anfrageName.substr(0, 4) == "add ") {
+				if (anfrageName.substr(0, 4) == "add " || anfrageName.substr(0, 4) == "ADD ") {
 					string zs = anfrageName;
 					zs.erase(0, 4);
 					TBMoutex.lock();
@@ -52,7 +52,7 @@ public:
 					daten->toString();
 					coutMoutex.unlock();
 				}
-				else if (anfrageName.substr(0, 7) == "remove ") {
+				else if (anfrageName.substr(0, 7) == "remove " || anfrageName.substr(0, 7) == "REMOVE ") {
 					string zs = anfrageName;
 					zs.erase(0, 7);
 					TBMoutex.lock();
@@ -65,7 +65,7 @@ public:
 					daten->toString();
 					coutMoutex.unlock();
 				}
-				else if (anfrageName == "help") {
+				else if (anfrageName == "help" || anfrageName == "HELP") {
 					work->write("add [name] [nummer] Antwort: wurde hinzugefuegt [name] [nummer]; remove [name] ,Antwort: [name] wurde geloescht; [name] Antwort: [nummer]");
 				}
 				else {
