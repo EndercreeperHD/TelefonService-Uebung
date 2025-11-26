@@ -8,6 +8,9 @@
 #include "Eintrag.h"
 using namespace std;
 
+inline mutex coutMoutex;
+inline mutex TBMoutex;
+
 class MyThread : public Thread
 {
 private:
@@ -20,8 +23,7 @@ public:
 	void setSocket(Socket* ini) { work = ini; };
 	Socket* getSocket() { return work; };
 	void run() override {
-		mutex coutMoutex;
-		mutex TBMoutex;
+
 		while (1) {
 			while (work == nullptr) {
 				Sleep(400);
@@ -36,7 +38,7 @@ public:
 				// 5b) Kommunikation mit read() write()
 				anfrageName = work->readLine();
 				coutMoutex.lock();
-				cout << "Thread Nr." << ThreadNr << " :";
+				cout << "Thread Nr." << ThreadNr << ": ";
 				cout << anfrageName << "\n";
 				coutMoutex.unlock();
 				if (anfrageName.substr(0, 4) == "add " || anfrageName.substr(0, 4) == "ADD ") {
