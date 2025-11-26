@@ -76,6 +76,7 @@ void Telefonbuch::toString()
 		cout << e->getName() << " " << e->getNr() << "\n";
 		i++;
 	}
+	cout << "---------------------------------" << endl;
 }
 
 
