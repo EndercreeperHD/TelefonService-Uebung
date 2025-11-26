@@ -36,7 +36,7 @@ public:
 				// 5b) Kommunikation mit read() write()
 				anfrageName = work->readLine();
 				coutMoutex.lock();
-				cout << "Thread Nr." << ThreadNr << "\n";
+				cout << "Thread Nr." << ThreadNr << " :";
 				cout << anfrageName << "\n";
 				coutMoutex.unlock();
 				if (anfrageName.substr(0, 4) == "add " || anfrageName.substr(0, 4) == "ADD ") {
